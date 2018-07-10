@@ -1,5 +1,6 @@
 package com.jk51.shiroTest.web;
 
+import com.jk51.shiroTest.domain.User;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -8,11 +9,10 @@ import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * 版权所有(C) 2017 上海银路投资管理有限公司
@@ -53,7 +53,8 @@ public class LoginController {
 
     @RequestMapping("test")
     @ResponseBody
-    public String test(){
+    public String test(HttpServletRequest request){
+
 
         Subject currentUser =  SecurityUtils.getSubject();
 
@@ -94,10 +95,26 @@ public class LoginController {
     }
 
 
+    @RequestMapping("testNotweb")
+    @ResponseBody
+    public void testNotweb(HttpServletRequest request){
+
+       String sessionId =  request.getHeader("sessionToken");
+       Session session =  sessionDao.readSession(sessionId);
+    }
+
     @RequestMapping("logout")
     public String logout() {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
         return "success";
     }
+
+    @RequestMapping("/testForamtter")
+    @ResponseBody
+    public void formatter(User user1){
+
+        return;
+    }
+
 }

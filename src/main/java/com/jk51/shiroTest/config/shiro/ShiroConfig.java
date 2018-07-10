@@ -23,6 +23,9 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 import javax.servlet.DispatcherType;
@@ -79,6 +82,8 @@ public class ShiroConfig {
         chains.put("/base/**", "anon");
         chains.put("/css/**", "anon");
         chains.put("/layer/**", "anon");
+        chains.put("/testNotweb", "anon");
+        chains.put("/testForamtter", "anon");
         chains.put("/**", "authc");
         bean.setFilterChainDefinitionMap(chains);
         return bean;
@@ -92,7 +97,7 @@ public class ShiroConfig {
         MyRealm myRealm =  new MyRealm();
         myRealm.setCacheManager(cacheManager());
         myRealm.setCachingEnabled(true);
-        myRealm.setAuthenticationCachingEnabled(false);
+        myRealm.setAuthenticationCachingEnabled(true);
         myRealm.setAuthorizationCachingEnabled(true);
         return myRealm;
     }
@@ -151,6 +156,8 @@ public class ShiroConfig {
     public RedisTemplate<byte[], byte[]> shiroRedisTemplate() {
         RedisTemplate<byte[], byte[]> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory());
+        template.setEnableDefaultSerializer(false);
+        template.setValueSerializer(new JdkSerializationRedisSerializer());
         return template;
     }
 
@@ -165,6 +172,7 @@ public class ShiroConfig {
         JedisConnectionFactory conn = new JedisConnectionFactory();
         conn.setHostName("172.20.10.192");
         conn.setPort(6379);
+        conn.setDatabase(3);
         return conn;
     }
 
